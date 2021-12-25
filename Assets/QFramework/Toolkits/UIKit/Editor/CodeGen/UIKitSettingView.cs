@@ -13,20 +13,55 @@ using UnityEngine;
 // ReSharper disable once CheckNamespace
 namespace QFramework
 {
+    
+  public class UIKitEditorWindow : EditorWindow
+    {
+
+        [MenuItem("QFramework/Toolkits/UI Kit %#u")]
+        public static void OpenWindow()
+        {
+            var window = (UIKitEditorWindow)GetWindow(typeof(UIKitEditorWindow), true);
+            Debug.Log(Screen.width + " screen width*****");
+            window.position = new Rect(100, 100, 600, 400);
+            window.Show();
+        }
+
+
+        private void OnEnable()
+        {
+            mUIKitSettingView = new UIKitSettingView();
+            mUIKitSettingView.Init();
+        }
+
+        UIKitSettingView mUIKitSettingView = null;
+        
+
+        public void OnDisable()
+        {
+            mUIKitSettingView.OnDispose();
+            mUIKitSettingView = null;
+        }
+
+        public void OnGUI()
+        {
+            GUILayout.BeginVertical();
+
+
+            mUIKitSettingView.OnGUI();
+
+
+            GUILayout.EndVertical();
+            GUILayout.Space(50);
+            
+        }
+    }    
     public class UIKitSettingView 
     {
         private UIKitSettingData mUiKitSettingData;
         
-
-
-        private UIKitSettingViewModel mViewModel;
-
         public void Init()
         {
             mUiKitSettingData = UIKitSettingData.Load();
-
-            mViewModel = new UIKitSettingViewModel();
-
         }
 
         private Lazy<GUIStyle> mLabelBold12 = new Lazy<GUIStyle>(() =>
@@ -50,90 +85,82 @@ namespace QFramework
         {
             
             GUILayout.BeginVertical("box");
-            GUILayout.Label(LocaleText.Namespace,mLabel12.Value,GUILayout.Width(200));
-
-            GUILayout.Space(6);
-
-            GUILayout.BeginHorizontal();
             {
-                GUILayout.Label(LocaleText.Namespace,mLabelBold12.Value,GUILayout.Width(200));
+                GUILayout.Label(LocaleText.Namespace, mLabel12.Value, GUILayout.Width(200));
 
-                mUiKitSettingData.Namespace =  EditorGUILayout.TextField(mUiKitSettingData.Namespace);
+                GUILayout.Space(6);
 
-            }
-            
-            GUILayout.Space(6);
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Label(LocaleText.Namespace, mLabelBold12.Value, GUILayout.Width(200));
 
-            GUILayout.BeginHorizontal();
-            {
-                GUILayout.Label(LocaleText.UIScriptGenerateDir,mLabelBold12.Value,GUILayout.Width(200));
+                    mUiKitSettingData.Namespace = EditorGUILayout.TextField(mUiKitSettingData.Namespace);
 
-                mUiKitSettingData.UIScriptDir = EditorGUILayout.TextField(mUiKitSettingData.UIScriptDir);
-
-            }
-            
-            GUILayout.Space(6);
-
-            GUILayout.BeginHorizontal();
-            {
-                GUILayout.Label(LocaleText.UIPanelPrefabDir,mLabelBold12.Value,GUILayout.Width(200));
-
-                mUiKitSettingData.UIPrefabDir = EditorGUILayout.TextField(mUiKitSettingData.UIPrefabDir);
-
-            }
-            
-            GUILayout.Space(12);
-
-            GUILayout.BeginHorizontal();
-            {
-                GUILayout.Label(LocaleText.ViewControllerScriptGenerateDir,mLabelBold12.Value,GUILayout.Width(220));
-
-                mUiKitSettingData.DefaultViewControllerScriptDir = EditorGUILayout.TextField(mUiKitSettingData.DefaultViewControllerScriptDir);
-
-            }
-            GUILayout.EndHorizontal();
-            
-            GUILayout.Space(6);
-
-            
-            GUILayout.BeginHorizontal();
-            {
-                
-                GUILayout.Label(LocaleText.ViewControllerPrefabGenerateDir,mLabelBold12.Value,GUILayout.Width(220));
-                mUiKitSettingData.DefaultViewControllerPrefabDir = EditorGUILayout.TextField(mUiKitSettingData.DefaultViewControllerPrefabDir);
-
-            }
+                }
                 GUILayout.EndHorizontal();
 
-            GUILayout.Space(6);
-            
-            if (GUILayout.Button(LocaleText.Apply))
-            {
-                mUiKitSettingData.Save();
+                GUILayout.Space(6);
+
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Label(LocaleText.UIScriptGenerateDir, mLabelBold12.Value, GUILayout.Width(200));
+
+                    mUiKitSettingData.UIScriptDir = EditorGUILayout.TextField(mUiKitSettingData.UIScriptDir);
+
+                }
+                GUILayout.EndHorizontal();
+                
+                GUILayout.Space(6);
+
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Label(LocaleText.UIPanelPrefabDir, mLabelBold12.Value, GUILayout.Width(200));
+
+                    mUiKitSettingData.UIPrefabDir = EditorGUILayout.TextField(mUiKitSettingData.UIPrefabDir);
+
+                }
+                GUILayout.EndHorizontal();
+                GUILayout.Space(12);
+
+                GUILayout.BeginHorizontal();
+                {
+                    GUILayout.Label(LocaleText.ViewControllerScriptGenerateDir, mLabelBold12.Value,
+                        GUILayout.Width(220));
+
+                    mUiKitSettingData.DefaultViewControllerScriptDir =
+                        EditorGUILayout.TextField(mUiKitSettingData.DefaultViewControllerScriptDir);
+
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.Space(6);
+
+
+                GUILayout.BeginHorizontal();
+                {
+
+                    GUILayout.Label(LocaleText.ViewControllerPrefabGenerateDir, mLabelBold12.Value,
+                        GUILayout.Width(220));
+                    mUiKitSettingData.DefaultViewControllerPrefabDir =
+                        EditorGUILayout.TextField(mUiKitSettingData.DefaultViewControllerPrefabDir);
+
+                }
+                GUILayout.EndHorizontal();
+
+                GUILayout.Space(6);
+
+                if (GUILayout.Button(LocaleText.Apply))
+                {
+                    mUiKitSettingData.Save();
+                }
             }
-            
-            // mViewModel.PanelNameToCreate = EditorGUILayout.TextField(mViewModel.PanelNameToCreate);
-            //
-            // if (GUILayout.Button(LocaleText.CreateUIPanel))
-            // {
-            //     mViewModel.OnCreateUIPanelClick();
-            // }
             GUILayout.EndVertical();
         }
 
         public void OnDispose()
         {
         }
-
-        public new void OnShow()
-        {
-            
-        }
-
-        public new void OnHide()
-        {
-            
-        }
+        
 
         class LocaleText
         {
@@ -171,16 +198,7 @@ namespace QFramework
             {
                 get { return Language.IsChinese ? "保存" : "Apply"; }
             }
-
-            public static string UIKitSettings
-            {
-                get { return Language.IsChinese ? "UI Kit 设置" : "UI Kit Settings"; }
-            }
-
-            public static string CreateUIPanel
-            {
-                get { return Language.IsChinese ? "创建 UI Panel" : "Create UI Panel"; }
-            }
+            
         }
     }
     internal class Language
